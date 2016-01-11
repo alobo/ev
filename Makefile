@@ -11,5 +11,8 @@ main: physics
 physics: $(patsubst %.cpp, %.o, $(wildcard Physics/*.cpp))
 	$(CC) $(CFLAGS) $< $@ -c -lm
 
+demo: physics
+	$(CC) $(CFLAGS) demo/physics.cpp -o demo_physics.o $(LIBS) $(OBJ_FILES)
+
 clean:
 	rm -f bin/*.o
