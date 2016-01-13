@@ -7,9 +7,9 @@
 
 class Environment {
 private:
-    int width_;
-    int height_;
-    std::vector<RigidBody> objects_;
+    int m_width;
+    int m_height;
+    std::vector<RigidBody> m_objects;
 
 public:
     Environment(int width, int height);

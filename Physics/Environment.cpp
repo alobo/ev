@@ -1,8 +1,8 @@
 #include "Environment.h"
 
 Environment::Environment(int width, int height) {
-    width_ = width;
-    height_ = height;
+    m_width = width;
+    m_height = height;
 }
 
 void Environment::addObject(RigidBody body) {
