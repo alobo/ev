@@ -9,10 +9,10 @@ class Environment {
 private:
     int m_width;
     int m_height;
-    std::vector<RigidBody> m_objects;
+    std::vector<RigidBody*> m_objects;
 
 public:
     Environment(int width, int height);
-    void addObject(RigidBody body);
+    void addObject(RigidBody* body);
     void step(float timeStep);
 };
