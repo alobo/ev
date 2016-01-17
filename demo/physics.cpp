@@ -25,6 +25,13 @@ int main() {
     circle2.acceleration[1] = 0;
     env.addObject(&circle2);
 
+    Circle circle3 = Circle();
+    circle3.position[0] = 300;
+    circle3.position[1] = 300;
+    circle3.velocity[0] = 1;
+    circle3.velocity[1] = 0.5;
+    // env.addObject(&circle3);
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -35,6 +42,7 @@ int main() {
         window.clear();
         circle1.draw(&window);
         circle2.draw(&window);
+        circle3.draw(&window);
         window.display();
         env.step(1.0);
     }

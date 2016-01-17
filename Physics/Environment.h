@@ -10,6 +10,7 @@ private:
     int m_width;
     int m_height;
     std::vector<RigidBody*> m_objects;
+    bool circleVsCircle(RigidBody* a, RigidBody* b);
 
 public:
     Environment(int width, int height);

@@ -26,5 +26,18 @@ void Environment::step(float timeStep) {
         } else if ((*it)->position[1] + (*it)->size[1] > m_height) {
             (*it)->velocity[1] *= -1;
         }
+
+        for(std::vector<RigidBody*>::iterator it2 = m_objects.begin(); it2 != m_objects.end(); ++it2) {
+            if (*it2 == *it) continue;
+            if (circleVsCircle(*it, *it2)) {
+                // Collision occured
+            }
+        }
     }
+}
+
+bool Environment::circleVsCircle(RigidBody* a, RigidBody* b) {
+    float r = pow(a->radius + b->radius, 2);
+    float distance = pow(a->position[0] - b->position[0], 2) + pow(a->position[1] - b->position[1], 2);
+    return distance < r;
 }
