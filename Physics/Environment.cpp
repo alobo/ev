@@ -3,9 +3,10 @@
 
 Eigen::Vector2f rightWallNormal = Eigen::Vector2f(-1.0, 0.0);
 
-Environment::Environment(int width, int height) {
+Environment::Environment(int width, int height, float coeff_friction) {
     m_width = width;
     m_height = height;
+    m_coeff_friction = coeff_friction;
 }
 
 void Environment::addObject(RigidBody* body) {
@@ -14,7 +15,7 @@ void Environment::addObject(RigidBody* body) {
 void Environment::step(float timeStep) {
     for(std::vector<RigidBody*>::iterator it = m_objects.begin(); it != m_objects.end(); ++it) {
         (*it)->position += (*it)->velocity * timeStep;
-        (*it)->velocity += (*it)->acceleration * timeStep;
+        (*it)->velocity += ((*it)->acceleration + (-1 * (*it)->velocity) * m_coeff_friction) * timeStep;
 
         // Handle bounds collisions
         if ((*it)->position[0] < 0) {

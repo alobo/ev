@@ -8,7 +8,7 @@ int main() {
 
     sf::RenderWindow window(sf::VideoMode(width, height), "Physics Demo");
 
-    Environment env = Environment(width, height);
+    Environment env = Environment(width, height, 0.0005);
     Circle circle1 = Circle();
     circle1.position[0] = 100;
     circle1.position[1] = 100;
