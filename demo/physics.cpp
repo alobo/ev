@@ -30,7 +30,7 @@ int main() {
     circle3.position[1] = 300;
     circle3.velocity[0] = 1;
     circle3.velocity[1] = 0.5;
-    // env.addObject(&circle3);
+    env.addObject(&circle3);
 
     while (window.isOpen()) {
         sf::Event event;

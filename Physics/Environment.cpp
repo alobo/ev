@@ -27,10 +27,14 @@ void Environment::step(float timeStep) {
             (*it)->velocity[1] *= -1;
         }
 
+        // Handle object-object collisions
         for(std::vector<RigidBody*>::iterator it2 = it; it2 != m_objects.end(); ++it2) {
             if (*it2 == *it) continue;
             if (circleVsCircle(*it, *it2)) {
-                // Collision occured
+                // Collision occured, resolve as elastic
+                std::swap((*it)->velocity, (*it2)->velocity);
+                (*it)->acceleration *= 0;
+                (*it2)->acceleration *= 0;
             }
         }
     }
