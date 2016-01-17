@@ -13,7 +13,7 @@ int main() {
     circle1.position[0] = 100;
     circle1.position[1] = 100;
     circle1.velocity[0] = 1;
-    circle1.velocity[1] = 1;
+    circle1.velocity[1] = 0.5;
     env.addObject(&circle1);
 
     Circle circle2 = Circle();
@@ -21,6 +21,8 @@ int main() {
     circle2.position[1] = 0;
     circle2.velocity[0] = 1;
     circle2.velocity[1] = 1;
+    circle2.acceleration[0] = 0.001;
+    circle2.acceleration[1] = 0;
     env.addObject(&circle2);
 
     while (window.isOpen()) {
@@ -34,7 +36,7 @@ int main() {
         circle1.draw(&window);
         circle2.draw(&window);
         window.display();
-        env.step(0.0);
+        env.step(1.0);
     }
 
     return 0;

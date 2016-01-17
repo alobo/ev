@@ -1,6 +1,7 @@
 #include "Circle.h"
 
 Circle::Circle() {
+    size = Eigen::Vector2f(BASE_RADIUS * 2, BASE_RADIUS * 2);
     m_base = sf::CircleShape(BASE_RADIUS);
     m_base.setFillColor(sf::Color::Red);
     m_line[0] = sf::Vertex(sf::Vector2f(position[0] + BASE_RADIUS, position[1]));
