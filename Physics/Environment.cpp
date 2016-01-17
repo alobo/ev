@@ -27,7 +27,7 @@ void Environment::step(float timeStep) {
             (*it)->velocity[1] *= -1;
         }
 
-        for(std::vector<RigidBody*>::iterator it2 = m_objects.begin(); it2 != m_objects.end(); ++it2) {
+        for(std::vector<RigidBody*>::iterator it2 = it; it2 != m_objects.end(); ++it2) {
             if (*it2 == *it) continue;
             if (circleVsCircle(*it, *it2)) {
                 // Collision occured
