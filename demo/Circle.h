@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Physics/RigidBody.h"
-#include "Graphics/DrawableInterface.h"
+#include "../Physics/RigidBody.h"
+#include "../Graphics/DrawableInterface.h"
 
 class Circle : public RigidBody, public DrawableInterface
 {

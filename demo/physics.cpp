@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "../Physics/Environment.h"
-#include "../Circle.h"
+#include "Circle.h"
 
 int main() {
     int width = 1600;
