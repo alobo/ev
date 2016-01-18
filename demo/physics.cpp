@@ -3,34 +3,24 @@
 #include "../Circle.h"
 
 int main() {
-    int width = 800;
-    int height = 600;
+    int width = 1600;
+    int height = 1200;
 
     sf::RenderWindow window(sf::VideoMode(width, height), "Physics Demo");
 
     Environment env = Environment(width, height, 0.0005);
-    Circle circle1 = Circle();
-    circle1.position[0] = 100;
-    circle1.position[1] = 100;
-    circle1.velocity[0] = 1;
-    circle1.velocity[1] = 0.5;
-    env.addObject(&circle1);
 
-    Circle circle2 = Circle();
-    circle2.position[0] = 0;
-    circle2.position[1] = 0;
-    circle2.velocity[0] = 1;
-    circle2.velocity[1] = 1;
-    circle2.acceleration[0] = 0.001;
-    circle2.acceleration[1] = 0;
-    env.addObject(&circle2);
-
-    Circle circle3 = Circle();
-    circle3.position[0] = 300;
-    circle3.position[1] = 300;
-    circle3.velocity[0] = 1;
-    circle3.velocity[1] = 0.5;
-    env.addObject(&circle3);
+    const int num_circles = 5;
+    Circle circles [num_circles];
+    for (int i = 0; i < num_circles; ++i) {
+        circles[i] = Circle();
+        circles[i].position[0] = 55 * (i + 1);
+        circles[i].position[1] = 55 * (i + 1);
+        circles[i].velocity[0] = i * (i % 2) ? -5 : 5;
+        circles[i].velocity[1] = i * (i % 2) ? 5 : -5;
+        circles[i].acceleration[1] = 0.0098;
+        env.addObject(&circles[i]);
+    }
 
     while (window.isOpen()) {
         sf::Event event;
@@ -40,9 +30,11 @@ int main() {
         }
 
         window.clear();
-        circle1.draw(&window);
-        circle2.draw(&window);
-        circle3.draw(&window);
+
+        for (int i = 0; i < num_circles; ++i) {
+            circles[i].draw(&window);
+        }
+
         window.display();
         env.step(1.0);
     }

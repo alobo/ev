@@ -10,6 +10,8 @@ private:
     int m_width;
     int m_height;
     float m_coeff_friction;
+    int m_collision_iterations;
+    float m_iteration_resolution;
     std::vector<RigidBody*> m_objects;
     bool circleVsCircle(RigidBody* a, RigidBody* b);
 

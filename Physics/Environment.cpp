@@ -7,6 +7,8 @@ Environment::Environment(int width, int height, float coeff_friction) {
     m_width = width;
     m_height = height;
     m_coeff_friction = coeff_friction;
+    m_collision_iterations = 4;
+    m_iteration_resolution = 1.0f/(float)m_collision_iterations;
 }
 
 void Environment::addObject(RigidBody* body) {
@@ -17,15 +19,33 @@ void Environment::step(float timeStep) {
         (*it)->position += (*it)->velocity * timeStep;
         (*it)->velocity += ((*it)->acceleration + (-1 * (*it)->velocity) * m_coeff_friction) * timeStep;
 
-        // Handle bounds collisions
+        int iterations = 0;
+
+        // Handle bounds collisions and project to avoid overlap
         if ((*it)->position[0] < 0) {
             (*it)->velocity[0] *= -1;
+            while(iterations < m_collision_iterations && (*it)->position[0] < 0) {
+                (*it)->position += (*it)->velocity * m_iteration_resolution;
+                ++iterations;
+            }
         } else if ((*it)->position[1] < 0) {
             (*it)->velocity[1] *= -1;
+            while(iterations < m_collision_iterations && (*it)->position[1] < 0){
+                (*it)->position += (*it)->velocity * m_iteration_resolution;
+                ++iterations;
+            }
         } else if ((*it)->position[0] + (*it)->size[0] > m_width) {
             (*it)->velocity[0] *= -1;
+            while(iterations < m_collision_iterations && (*it)->position[0] + (*it)->size[0] > m_width){
+                (*it)->position += (*it)->velocity * m_iteration_resolution;
+                ++iterations;
+            }
         } else if ((*it)->position[1] + (*it)->size[1] > m_height) {
             (*it)->velocity[1] *= -1;
+            while(iterations < m_collision_iterations && (*it)->position[1] + (*it)->size[1] > m_height){
+                (*it)->position += (*it)->velocity * m_iteration_resolution;
+                ++iterations;
+            }
         }
 
         // Handle object-object collisions
@@ -34,8 +54,12 @@ void Environment::step(float timeStep) {
             if (circleVsCircle(*it, *it2)) {
                 // Collision occured, resolve as elastic
                 std::swap((*it)->velocity, (*it2)->velocity);
-                (*it)->acceleration *= 0;
-                (*it2)->acceleration *= 0;
+                // Project objects so they no longer collide
+                iterations = 0;
+                while(iterations < m_collision_iterations && circleVsCircle(*it, *it2)){
+                    (*it)->position += (*it)->velocity * m_iteration_resolution;
+                    ++iterations;
+                }
             }
         }
     }
