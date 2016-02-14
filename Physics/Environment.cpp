@@ -25,25 +25,25 @@ void Environment::step(float timeStep) {
         if ((*it)->position[0] < 0) {
             (*it)->velocity[0] *= -1;
             while(iterations < m_collision_iterations && (*it)->position[0] < 0) {
-                (*it)->position += (*it)->velocity * m_iteration_resolution;
+                (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
                 ++iterations;
             }
         } else if ((*it)->position[1] < 0) {
             (*it)->velocity[1] *= -1;
             while(iterations < m_collision_iterations && (*it)->position[1] < 0){
-                (*it)->position += (*it)->velocity * m_iteration_resolution;
+                (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
                 ++iterations;
             }
         } else if ((*it)->position[0] + (*it)->size[0] > m_width) {
             (*it)->velocity[0] *= -1;
             while(iterations < m_collision_iterations && (*it)->position[0] + (*it)->size[0] > m_width){
-                (*it)->position += (*it)->velocity * m_iteration_resolution;
+                (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
                 ++iterations;
             }
         } else if ((*it)->position[1] + (*it)->size[1] > m_height) {
             (*it)->velocity[1] *= -1;
             while(iterations < m_collision_iterations && (*it)->position[1] + (*it)->size[1] > m_height){
-                (*it)->position += (*it)->velocity * m_iteration_resolution;
+                (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
                 ++iterations;
             }
         }
@@ -57,7 +57,7 @@ void Environment::step(float timeStep) {
                 // Project objects so they no longer collide
                 iterations = 0;
                 while(iterations < m_collision_iterations && circleVsCircle(*it, *it2)){
-                    (*it)->position += (*it)->velocity * m_iteration_resolution;
+                    (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
                     ++iterations;
                 }
             }
