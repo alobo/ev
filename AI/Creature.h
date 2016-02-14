@@ -1,19 +1,20 @@
 #pragma once
 
+#include <eigen3/Eigen/Core>
 #include "../Physics/RigidBody.h"
 #include "../Graphics/DrawableInterface.h"
 
 class Creature : public RigidBody, public DrawableInterface
 {
 private:
-    float m_rotation;
+    float m_rotation_angle;
     sf::CircleShape m_base;
     sf::CircleShape m_eye;
-    sf::Vertex m_left_fov_line[2];
-    sf::Vertex m_right_fov_line[2];
+    sf::CircleShape m_fov;
 
 public:
     Creature();
     void draw(sf::RenderWindow *window);
+    void setRotation(float degrees);
     ~Creature();
 };
