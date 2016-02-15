@@ -8,15 +8,15 @@ Creature::Creature() {
 
     m_base = sf::CircleShape(radius);
     m_eye = sf::CircleShape(radius / 4);
-    m_fov = sf::CircleShape(40, 3); // Triangle
+    m_fov = sf::CircleShape(60, 3); // Triangle
 
     // Set the eye and fov origin to the center of the base
     m_eye.setOrigin(radius / 4, -radius * 0.65);
-    m_fov.setOrigin(40, -radius);
+    m_fov.setOrigin(60, -radius);
 
     m_base.setFillColor(sf::Color::Red);
     m_eye.setFillColor(sf::Color::Green);
-    m_fov.setFillColor(sf::Color::White);
+    m_fov.setFillColor(sf::Color(255, 255, 255, 125));
 }
 
 void Creature::draw(sf::RenderWindow *window) {
@@ -71,6 +71,13 @@ void Creature::moveForward() {
     this->velocity[1] += sin(ratio * (m_rotation_angle + 90)) * 40;
 }
 
+void Creature::process(std::vector<sf::CircleShape> food) {
+    for(std::vector<sf::CircleShape>::iterator it = food.begin(); it != food.end(); ++it) {
+        if (this->isPointInFOV(it->getPosition())) {
+            this->moveForward();
+        }
+    }
+}
 
 Creature::~Creature() {
 }

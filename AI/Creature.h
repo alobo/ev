@@ -19,5 +19,6 @@ public:
     void setRotation(float degrees);
     void moveForward();
     bool isPointInFOV(sf::Vector2f point);
+    void process(std::vector<sf::CircleShape> food);
     ~Creature();
 };
