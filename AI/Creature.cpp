@@ -65,5 +65,12 @@ bool Creature::isPointInFOV(sf::Vector2f point) {
     return lambda[0] > 0 && lambda[1] > 0 && lambda[2] > 0;
 }
 
+void Creature::moveForward() {
+    static const float ratio = 3.141592865358979 / 180.0;
+    this->velocity[0] += cos(ratio * (m_rotation_angle + 90)) * 40;
+    this->velocity[1] += sin(ratio * (m_rotation_angle + 90)) * 40;
+}
+
+
 Creature::~Creature() {
 }
