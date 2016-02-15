@@ -1,4 +1,5 @@
 #include <math.h>
+#include <eigen3/Eigen/LU>
 #include "Creature.h"
 
 Creature::Creature() {
@@ -36,6 +37,28 @@ void Creature::setRotation(float degrees) {
     if (m_rotation_angle >= 360) m_rotation_angle = 0;
     m_eye.setRotation(m_rotation_angle);
     m_fov.setRotation(m_rotation_angle);
+}
+
+bool Creature::isPointInFOV(sf::Vector2f point) {
+    // Get transformed points of field of view triangle
+    sf::Vector2f p1 = m_fov.getTransform().transformPoint(m_fov.getPoint(0));
+    sf::Vector2f p2 = m_fov.getTransform().transformPoint(m_fov.getPoint(1));
+    sf::Vector2f p3 = m_fov.getTransform().transformPoint(m_fov.getPoint(2));
+
+    // Find barycentric coordinates of point in fov triangle
+    Eigen::Matrix3f R;
+    R << p1.x, p2.x, p3.x,
+         p1.y, p2.y, p3.y,
+         1, 1, 1;
+
+    Eigen::Vector3f r;
+    r << point.x, point.y, 1;
+
+    // Solve Rλ = r for λ
+    Eigen::Vector3f lambda = R.inverse() * r;
+
+    // Point is in triangle if all coordinates are positive
+    return lambda[0] > 0 && lambda[1] > 0 && lambda[2] > 0;
 }
 
 Creature::~Creature() {
