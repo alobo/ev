@@ -32,9 +32,13 @@ void Creature::draw(sf::RenderWindow *window) {
     window->draw(m_eye);
 }
 
+float Creature::getRotation() {
+    return m_rotation_angle;
+}
+
 void Creature::setRotation(float degrees) {
-    m_rotation_angle = degrees;
-    if (m_rotation_angle >= 360) m_rotation_angle = 0;
+    // Calculate remainder manually - fmodf doesn't handle negative numbers well
+    m_rotation_angle = degrees - 360.0 * floor(degrees/360.0);
     m_eye.setRotation(m_rotation_angle);
     m_fov.setRotation(m_rotation_angle);
 }

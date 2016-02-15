@@ -15,6 +15,7 @@ private:
 public:
     Creature();
     void draw(sf::RenderWindow *window);
+    float getRotation();
     void setRotation(float degrees);
     bool isPointInFOV(sf::Vector2f point);
     ~Creature();
