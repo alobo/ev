@@ -1,5 +1,7 @@
 #include <math.h>
+#include <iostream>
 #include <eigen3/Eigen/LU>
+#include <eigen3/Eigen/Dense>
 #include "Creature.h"
 
 Creature::Creature() {
@@ -17,6 +19,8 @@ Creature::Creature() {
     m_base.setFillColor(sf::Color::Red);
     m_eye.setFillColor(sf::Color::Green);
     m_fov.setFillColor(sf::Color(255, 255, 255, 125));
+
+    m_network = NeuralNetwork();
 }
 
 void Creature::draw(sf::RenderWindow *window) {
@@ -71,11 +75,46 @@ void Creature::moveForward() {
     this->velocity[1] += sin(ratio * (m_rotation_angle + 90)) * 40;
 }
 
-void Creature::process(std::vector<sf::CircleShape> food) {
-    for(std::vector<sf::CircleShape>::iterator it = food.begin(); it != food.end(); ++it) {
-        if (this->isPointInFOV(it->getPosition())) {
-            this->moveForward();
+float Creature::distanceToPoint(sf::Vector2f point) {
+    return pow(position[0] + radius - point.x, 2)
+            + pow(position[1] + radius - point.y, 2);
+}
+
+void Creature::process(std::vector<sf::CircleShape>* food) {
+    static const float max_distance = pow(60 * 2 + radius, 2); // Maximum distance food can be
+    float closest = max_distance;
+    for(std::vector<sf::CircleShape>::iterator it = food->begin(); it != food->end(); ++it) {
+        float distance = this->distanceToPoint(it->getPosition());
+
+        // Eat food if we're on top of it
+        if (distance < radius * radius) {
+            energy += 1;
+            it = food->erase(it);
+        } else {
+            if (this->isPointInFOV(it->getPosition()) && distance < closest) {
+                closest = distance;
+            }
         }
+    }
+
+    closest = closest / max_distance;
+
+    // Build input vector
+    Eigen::MatrixXd p = Eigen::MatrixXd(3,1);
+    p << closest, energy, 1;
+
+    Eigen::MatrixXd out = m_network.process(p);
+
+    if (out(0,0) < -0.25) {
+        // Rotate counter Clockwise
+        this->setRotation(this->getRotation() - 5);
+    } else if (out(0,0) > 0.25) {
+        // Rotate Clockwise
+        this->setRotation(this->getRotation() + 5);
+    }
+
+    if (out(1,0) > 0) {
+        this->moveForward();
     }
 }
 
