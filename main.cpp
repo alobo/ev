@@ -4,10 +4,19 @@
 #include "Physics/Environment.h"
 #include "AI/Creature.h"
 
+const int WIDTH = 1600;
+const int HEIGHT = 1200;
+const int NUM_CREATURES = 10;
+const int NUM_FOOD = 50;
+
+Environment env = Environment(WIDTH, HEIGHT, 0.5);
+Creature creatures [NUM_CREATURES];
+std::vector<sf::CircleShape> food;
+
 /**
 * Provide an interactive console
 */
-void launchConsole(Creature *creatures) {
+void launchConsole() {
     std::cout << "Commands" << std::endl;
     std::cout << "\tr:\tResume Simulation" << std::endl;
     for (std::string line; line != "r"; std::getline(std::cin, line)) {
@@ -22,12 +31,8 @@ void launchConsole(Creature *creatures) {
 }
 
 int main() {
-    int width = 1600;
-    int height = 1200;
 
-    sf::RenderWindow window(sf::VideoMode(width, height), "Main");
-
-    Environment env = Environment(width, height, 0.5);
+    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Main");
 
     // Setup test creature
     Creature creature = Creature();
@@ -39,8 +44,6 @@ int main() {
     env.addObject(&creature);
 
     // Setup creatures
-    static const int NUM_CREATURES = 4;
-    Creature creatures [NUM_CREATURES];
     for (int i = 0; i < NUM_CREATURES; ++i) {
         creatures[i] = Creature();
         creatures[i].position[0] = 100 * (i + 1);
@@ -50,14 +53,12 @@ int main() {
     }
 
     // Setup food
-    static const int NUM_FOOD = 50;
-    std::vector<sf::CircleShape> food;
     for (int i = 0; i < NUM_FOOD; ++i) {
         sf::CircleShape f = sf::CircleShape(4);
         f.setOrigin(4, 4);
         f.setFillColor(sf::Color::Yellow);
-        int x = rand() % (width - 4) + 4;
-        int y = rand() % (height - 4) + 4;
+        int x = rand() % (WIDTH - 4) + 4;
+        int y = rand() % (HEIGHT - 4) + 4;
         f.setPosition(x, y);
         food.push_back(f);
     }
@@ -83,7 +84,7 @@ int main() {
                     } else if (event.key.code == sf::Keyboard::D) {
                         creature.setRotation(creature.getRotation() - 5);
                     } else if (event.key.code == sf::Keyboard::P) {
-                        launchConsole(creatures);
+                        launchConsole();
                         frame_clock.restart();
                     }
                     break;
