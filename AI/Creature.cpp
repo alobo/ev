@@ -118,5 +118,9 @@ void Creature::process(std::vector<sf::CircleShape>* food) {
     }
 }
 
+NeuralNetwork Creature::getNeuralNetwork() {
+    return m_network;
+}
+
 Creature::~Creature() {
 }

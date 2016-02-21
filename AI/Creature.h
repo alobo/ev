@@ -24,5 +24,6 @@ public:
     bool isPointInFOV(sf::Vector2f point);
     float distanceToPoint(sf::Vector2f point);
     void process(std::vector<sf::CircleShape>* food);
+    NeuralNetwork getNeuralNetwork();
     ~Creature();
 };

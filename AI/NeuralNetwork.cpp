@@ -16,3 +16,9 @@ Eigen::MatrixXd NeuralNetwork::process(Eigen::MatrixXd p) {
 
 NeuralNetwork::~NeuralNetwork() {
 }
+
+std::ostream& operator<< (std::ostream &out, const NeuralNetwork &network) {
+    out << "w1:" << std::endl << network.w1 << std::endl;
+    out << "w2:" << std::endl << network.w2 << std::endl;
+    return out;
+}

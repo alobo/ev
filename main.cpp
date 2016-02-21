@@ -1,6 +1,25 @@
+#include <iostream>
+#include <string>
 #include <SFML/Graphics.hpp>
 #include "Physics/Environment.h"
 #include "AI/Creature.h"
+
+/**
+* Provide an interactive console
+*/
+void launchConsole(Creature *creatures) {
+    std::cout << "Commands" << std::endl;
+    std::cout << "\tr:\tResume Simulation" << std::endl;
+    for (std::string line; line != "r"; std::getline(std::cin, line)) {
+        int index = 0;
+        switch (line[0]) {
+            case 'c':
+                index = (int) (line[2] - '0');
+                std::cout << creatures[index].getNeuralNetwork() << std::endl;
+                break;
+        }
+    }
+}
 
 int main() {
     int width = 1600;
@@ -26,6 +45,7 @@ int main() {
         creatures[i] = Creature();
         creatures[i].position[0] = 100 * (i + 1);
         creatures[i].position[1] = 100 * (i + 1);
+        creatures[i].setRotation(0);
         env.addObject(&creatures[i]);
     }
 
@@ -62,13 +82,15 @@ int main() {
                         creature.setRotation(creature.getRotation() + 5);
                     } else if (event.key.code == sf::Keyboard::D) {
                         creature.setRotation(creature.getRotation() - 5);
+                    } else if (event.key.code == sf::Keyboard::P) {
+                        launchConsole(creatures);
+                        frame_clock.restart();
                     }
                     break;
 
                 case sf::Event::MouseButtonPressed:
                     if (event.mouseButton.button == sf::Mouse::Right) {
                         sf::Vector2f position = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
-                        printf("%d\n", creature.isPointInFOV(position));
                     }
                     break;
 
@@ -83,9 +105,16 @@ int main() {
             window.draw(food[i]);
         }
 
+        // Debug creature
         creature.draw(&window);
+        for (int i = 0; i < NUM_FOOD; ++i) {
+            if (creature.isPointInFOV(food[i].getPosition())) {
+                // printf("%f\n", creature.distanceToPoint(food[i].getPosition()));
+            }
+        }
+
         for (int i = 0; i < NUM_CREATURES; ++i) {
-            creatures[i].process(food);
+            creatures[i].process(&food);
             creatures[i].draw(&window);
         }
 

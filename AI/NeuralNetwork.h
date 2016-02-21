@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <eigen3/Eigen/Core>
 
 class NeuralNetwork
@@ -12,4 +13,6 @@ public:
     NeuralNetwork();
     Eigen::MatrixXd process(Eigen::MatrixXd input);
     ~NeuralNetwork();
+
+    friend std::ostream& operator<< (std::ostream &out, const NeuralNetwork &brain);
 };
