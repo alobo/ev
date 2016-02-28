@@ -80,16 +80,16 @@ float Creature::distanceToPoint(sf::Vector2f point) {
             + pow(position[1] + radius - point.y, 2);
 }
 
-void Creature::process(std::vector<sf::CircleShape>* food) {
+void Creature::process(std::vector<Food>* food) {
     static const float max_distance = pow(60 * 2 + radius, 2); // Maximum distance food can be
     float closest = max_distance;
-    for(std::vector<sf::CircleShape>::iterator it = food->begin(); it != food->end(); ++it) {
+    for(std::vector<Food>::iterator it = food->begin(); it != food->end(); ++it) {
         float distance = this->distanceToPoint(it->getPosition());
 
         // Eat food if we're on top of it
         if (distance < radius * radius) {
             energy += 1;
-            it = food->erase(it);
+            it->consume();
         } else {
             if (this->isPointInFOV(it->getPosition()) && distance < closest) {
                 closest = distance;

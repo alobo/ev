@@ -4,6 +4,7 @@
 #include "../Physics/RigidBody.h"
 #include "../Graphics/DrawableInterface.h"
 #include "NeuralNetwork.h"
+#include "Food.h"
 
 class Creature : public RigidBody, public DrawableInterface
 {
@@ -23,7 +24,7 @@ public:
     void moveForward();
     bool isPointInFOV(sf::Vector2f point);
     float distanceToPoint(sf::Vector2f point);
-    void process(std::vector<sf::CircleShape>* food);
+    void process(std::vector<Food>* food);
     NeuralNetwork getNeuralNetwork();
     ~Creature();
 };

@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Physics/Environment.h"
 #include "AI/Creature.h"
+#include "AI/Food.h"
 
 const int WIDTH = 1600;
 const int HEIGHT = 1200;
@@ -11,7 +12,7 @@ const int NUM_FOOD = 50;
 
 Environment env = Environment(WIDTH, HEIGHT, 0.5);
 Creature creatures [NUM_CREATURES];
-std::vector<sf::CircleShape> food;
+std::vector<Food> food;
 
 /**
 * Provide an interactive console
@@ -54,12 +55,8 @@ int main() {
 
     // Setup food
     for (int i = 0; i < NUM_FOOD; ++i) {
-        sf::CircleShape f = sf::CircleShape(4);
-        f.setOrigin(4, 4);
-        f.setFillColor(sf::Color::Yellow);
-        int x = rand() % (WIDTH - 4) + 4;
-        int y = rand() % (HEIGHT - 4) + 4;
-        f.setPosition(x, y);
+        Food f = Food();
+        f.reset(WIDTH, HEIGHT);
         food.push_back(f);
     }
 
@@ -103,7 +100,7 @@ int main() {
         window.clear();
 
         for (int i = 0; i < NUM_FOOD; ++i) {
-            window.draw(food[i]);
+            if (!food[i].isConsumed()) window.draw(food[i]);
         }
 
         // Debug creature
