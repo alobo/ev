@@ -1,14 +1,17 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include <SFML/Graphics.hpp>
 #include "Physics/Environment.h"
 #include "AI/Creature.h"
 #include "AI/Food.h"
+#include "AI/Mutator.h"
 
 const int WIDTH = 1600;
 const int HEIGHT = 1200;
-const int NUM_CREATURES = 10;
+const int NUM_CREATURES = 25;
 const int NUM_FOOD = 50;
+const int GENERATION_LENGTH_SECONDS = 10;
 
 Environment env = Environment(WIDTH, HEIGHT, 0.5);
 Creature creatures [NUM_CREATURES];
@@ -31,6 +34,10 @@ void launchConsole() {
     }
 }
 
+bool compareCreatures(Creature  & a, Creature  & b) {
+    return a.getEnergy() > b.getEnergy();
+}
+
 int main() {
 
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Main");
@@ -39,16 +46,16 @@ int main() {
     Creature creature = Creature();
     creature.position[0] = 100;
     creature.position[1] = 100;
-    creature.velocity[0] = 20;
-    creature.velocity[1] = 20;
+    // creature.velocity[0] = 20;
+    // creature.velocity[1] = 20;
     creature.setRotation(50);
     env.addObject(&creature);
 
     // Setup creatures
     for (int i = 0; i < NUM_CREATURES; ++i) {
         creatures[i] = Creature();
-        creatures[i].position[0] = 100 * (i + 1);
-        creatures[i].position[1] = 100 * (i + 1);
+        creatures[i].position[0] = 50 * (i + 1);
+        creatures[i].position[1] = 50 * (i + 1);
         creatures[i].setRotation(0);
         env.addObject(&creatures[i]);
     }
@@ -61,6 +68,9 @@ int main() {
     }
 
     sf::Clock frame_clock;
+    sf::Clock gen_clock;
+    int gen_count = 0;
+    int frame_count = 0;
 
     while (window.isOpen()) {
         sf::Event event;
@@ -114,6 +124,36 @@ int main() {
         for (int i = 0; i < NUM_CREATURES; ++i) {
             creatures[i].process(&food);
             creatures[i].draw(&window);
+        }
+
+        // Handle generations
+        if (gen_clock.getElapsedTime().asSeconds() > GENERATION_LENGTH_SECONDS) {
+            std::cout << "Generation: " << ++gen_count << std::endl;
+
+            // Reset food
+            for (int i = 0; i < NUM_FOOD; ++i) {
+                food[i].reset(WIDTH, HEIGHT);
+            }
+
+            // Sort by energy level
+            std::sort(creatures, creatures + NUM_CREATURES, compareCreatures);
+
+            // Select and mutate the top 50% of creatures
+            Mutator mutator = Mutator();
+            for (int i = 0; i < NUM_CREATURES/2; ++i) {
+                printf("Creature %d  %f\n", i, creatures[i].getEnergy());
+                mutator.setTarget(&creatures[i]);
+                creatures[i].resetEnergy();
+                creatures[i].position[0] = WIDTH / 2;
+                creatures[i].position[1] = HEIGHT / 2;
+
+                mutator.mutate(&creatures[NUM_CREATURES - 1 - i]);
+                creatures[NUM_CREATURES - 1 - i].resetEnergy();
+                creatures[NUM_CREATURES - 1 - i].position[0] = WIDTH / 2;
+                creatures[NUM_CREATURES - 1 - i].position[1] = HEIGHT / 2;
+            }
+
+            gen_clock.restart();
         }
 
         window.display();

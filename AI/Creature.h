@@ -8,8 +8,9 @@
 
 class Creature : public RigidBody, public DrawableInterface
 {
+friend class Mutator;
 private:
-    float energy = 0.0;
+    float m_energy = 0.0;
     float m_rotation_angle;
     NeuralNetwork m_network;
     sf::CircleShape m_base;
@@ -25,6 +26,8 @@ public:
     bool isPointInFOV(sf::Vector2f point);
     float distanceToPoint(sf::Vector2f point);
     void process(std::vector<Food>* food);
+    float getEnergy();
+    void resetEnergy();
     NeuralNetwork getNeuralNetwork();
     ~Creature();
 };

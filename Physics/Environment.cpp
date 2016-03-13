@@ -23,25 +23,25 @@ void Environment::step(float timeStep) {
 
         // Handle bounds collisions and project to avoid overlap
         if ((*it)->position[0] < 0) {
-            (*it)->velocity[0] *= -1;
+            (*it)->velocity[0] *= -0.5;
             while(iterations < m_collision_iterations && (*it)->position[0] < 0) {
                 (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
                 ++iterations;
             }
         } else if ((*it)->position[1] < 0) {
-            (*it)->velocity[1] *= -1;
+            (*it)->velocity[1] *= -0.5;
             while(iterations < m_collision_iterations && (*it)->position[1] < 0){
                 (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
                 ++iterations;
             }
         } else if ((*it)->position[0] + (*it)->size[0] > m_width) {
-            (*it)->velocity[0] *= -1;
+            (*it)->velocity[0] *= -0.5;
             while(iterations < m_collision_iterations && (*it)->position[0] + (*it)->size[0] > m_width){
                 (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
                 ++iterations;
             }
         } else if ((*it)->position[1] + (*it)->size[1] > m_height) {
-            (*it)->velocity[1] *= -1;
+            (*it)->velocity[1] *= -0.5;
             while(iterations < m_collision_iterations && (*it)->position[1] + (*it)->size[1] > m_height){
                 (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
                 ++iterations;
@@ -49,19 +49,19 @@ void Environment::step(float timeStep) {
         }
 
         // Handle object-object collisions
-        for(std::vector<RigidBody*>::iterator it2 = it; it2 != m_objects.end(); ++it2) {
-            if (*it2 == *it) continue;
-            if (circleVsCircle(*it, *it2)) {
-                // Collision occured, resolve as elastic
-                std::swap((*it)->velocity, (*it2)->velocity);
-                // Project objects so they no longer collide
-                iterations = 0;
-                while(iterations < m_collision_iterations && circleVsCircle(*it, *it2)){
-                    (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
-                    ++iterations;
-                }
-            }
-        }
+        // for(std::vector<RigidBody*>::iterator it2 = it; it2 != m_objects.end(); ++it2) {
+        //     if (*it2 == *it) continue;
+        //     if (circleVsCircle(*it, *it2)) {
+        //         // Collision occured, resolve as elastic
+        //         std::swap((*it)->velocity, (*it2)->velocity);
+        //         // Project objects so they no longer collide
+        //         iterations = 0;
+        //         while(iterations < m_collision_iterations && circleVsCircle(*it, *it2)){
+        //             (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
+        //             ++iterations;
+        //         }
+        //     }
+        // }
     }
 }
 

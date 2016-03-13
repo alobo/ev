@@ -5,6 +5,7 @@
 
 class NeuralNetwork
 {
+friend class Mutator;
 private:
     Eigen::MatrixXd w1;
     Eigen::MatrixXd w2;

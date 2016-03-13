@@ -10,20 +10,30 @@ Creature::Creature() {
 
     m_base = sf::CircleShape(radius);
     m_eye = sf::CircleShape(radius / 4);
-    m_fov = sf::CircleShape(60, 3); // Triangle
+    m_fov = sf::CircleShape(160, 3); // Triangle
 
     // Set the eye and fov origin to the center of the base
     m_eye.setOrigin(radius / 4, -radius * 0.65);
-    m_fov.setOrigin(60, -radius);
+    m_fov.setOrigin(160, -radius);
 
     m_base.setFillColor(sf::Color::Red);
     m_eye.setFillColor(sf::Color::Green);
     m_fov.setFillColor(sf::Color(255, 255, 255, 125));
 
+    m_energy = 100.0;
+
     m_network = NeuralNetwork();
 }
 
 void Creature::draw(sf::RenderWindow *window) {
+
+    int alpha = 255;
+    if (m_energy < 0) {
+        alpha = 25;
+    } else {
+        alpha = 25 + int((m_energy/100.0f) * 230);
+    }
+    m_base.setFillColor(sf::Color(255, 0, 0, alpha ));
 
     m_base.setPosition(position[0], position[1]);
 
@@ -42,9 +52,11 @@ float Creature::getRotation() {
 
 void Creature::setRotation(float degrees) {
     // Calculate remainder manually - fmodf doesn't handle negative numbers well
-    m_rotation_angle = degrees - 360.0 * floor(degrees/360.0);
+    m_rotation_angle = degrees - 3160.0 * floor(degrees/3160.0);
     m_eye.setRotation(m_rotation_angle);
     m_fov.setRotation(m_rotation_angle);
+
+    // m_energy -= 0.1;
 }
 
 bool Creature::isPointInFOV(sf::Vector2f point) {
@@ -71,8 +83,9 @@ bool Creature::isPointInFOV(sf::Vector2f point) {
 
 void Creature::moveForward() {
     static const float ratio = 3.141592865358979 / 180.0;
-    this->velocity[0] += cos(ratio * (m_rotation_angle + 90)) * 40;
-    this->velocity[1] += sin(ratio * (m_rotation_angle + 90)) * 40;
+    this->velocity[0] += cos(ratio * (m_rotation_angle + 90)) * 15;
+    this->velocity[1] += sin(ratio * (m_rotation_angle + 90)) * 15;
+    // m_energy -= 0.3;
 }
 
 float Creature::distanceToPoint(sf::Vector2f point) {
@@ -81,18 +94,26 @@ float Creature::distanceToPoint(sf::Vector2f point) {
 }
 
 void Creature::process(std::vector<Food>* food) {
-    static const float max_distance = pow(60 * 2 + radius, 2); // Maximum distance food can be
+    static const float max_distance = pow(160 * 2 + radius, 2); // Maximum distance food can be
+
+    m_energy -= 0.1;
+    if (m_energy <= 0) return; // Die
+
     float closest = max_distance;
     for(std::vector<Food>::iterator it = food->begin(); it != food->end(); ++it) {
-        float distance = this->distanceToPoint(it->getPosition());
+        if (!it->isConsumed()) {
+            float distance = this->distanceToPoint(it->getPosition());
 
-        // Eat food if we're on top of it
-        if (distance < radius * radius) {
-            energy += 1;
-            it->consume();
-        } else {
-            if (this->isPointInFOV(it->getPosition()) && distance < closest) {
-                closest = distance;
+            // Eat food if we're on top of it
+            if (distance < radius * radius) {
+                printf("%s\n", "EAT!");
+                m_energy += 10;
+                it->consume();
+            } else {
+                if (this->isPointInFOV(it->getPosition()) && distance < closest) {
+                    closest = distance;
+                    // m_energy += 0.05;
+                }
             }
         }
     }
@@ -101,7 +122,7 @@ void Creature::process(std::vector<Food>* food) {
 
     // Build input vector
     Eigen::MatrixXd p = Eigen::MatrixXd(3,1);
-    p << closest, energy, 1;
+    p << closest, m_energy/100.0, 1;
 
     Eigen::MatrixXd out = m_network.process(p);
 
@@ -116,6 +137,14 @@ void Creature::process(std::vector<Food>* food) {
     if (out(1,0) > 0) {
         this->moveForward();
     }
+}
+
+float Creature::getEnergy() {
+    return m_energy;
+}
+
+void Creature::resetEnergy() {
+    m_energy = 100.0;
 }
 
 NeuralNetwork Creature::getNeuralNetwork() {
