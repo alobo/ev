@@ -21,31 +21,22 @@ void Environment::step(float timeStep) {
 
         int iterations = 0;
 
-        // Handle bounds collisions and project to avoid overlap
+        // Handle bounds collisions
         if ((*it)->position[0] < 0) {
             (*it)->velocity[0] *= -0.5;
-            while(iterations < m_collision_iterations && (*it)->position[0] < 0) {
-                (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
-                ++iterations;
-            }
-        } else if ((*it)->position[1] < 0) {
+            (*it)->position[0] = 0;
+        }
+        if ((*it)->position[1] < 0) {
             (*it)->velocity[1] *= -0.5;
-            while(iterations < m_collision_iterations && (*it)->position[1] < 0){
-                (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
-                ++iterations;
-            }
-        } else if ((*it)->position[0] + (*it)->size[0] > m_width) {
+            (*it)->position[1] = 0;
+        }
+        if ((*it)->position[0] + (*it)->size[0] > m_width) {
             (*it)->velocity[0] *= -0.5;
-            while(iterations < m_collision_iterations && (*it)->position[0] + (*it)->size[0] > m_width){
-                (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
-                ++iterations;
-            }
-        } else if ((*it)->position[1] + (*it)->size[1] > m_height) {
+            (*it)->position[0] = m_width - (*it)->size[0];
+        }
+        if ((*it)->position[1] + (*it)->size[1] > m_height) {
             (*it)->velocity[1] *= -0.5;
-            while(iterations < m_collision_iterations && (*it)->position[1] + (*it)->size[1] > m_height){
-                (*it)->position += (*it)->velocity * m_iteration_resolution * timeStep;
-                ++iterations;
-            }
+            (*it)->position[1] = m_height - (*it)->size[1];
         }
 
         // Handle object-object collisions
