@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 #include <algorithm>
 #include <SFML/Graphics.hpp>
 #include "Physics/Environment.h"
@@ -13,6 +14,7 @@ const int NUM_CREATURES = 25;
 const int NUM_FOOD = 50;
 const int GENERATION_LENGTH_SECONDS = 10;
 
+int gen_count = 0;
 Environment env = Environment(WIDTH, HEIGHT, 0.5);
 Creature creatures [NUM_CREATURES];
 std::vector<Food> food;
@@ -36,6 +38,17 @@ void launchConsole() {
 
 bool compareCreatures(Creature  & a, Creature  & b) {
     return a.getEnergy() > b.getEnergy();
+}
+
+void writeOutData() {
+    std::ofstream outfile;
+    outfile.open("data.txt", std::ios_base::app);
+    outfile << gen_count << ",";
+    for (int i = 0; i < NUM_CREATURES; ++i) {
+        outfile << creatures[i].getEnergy();
+        outfile << ",";
+    }
+    outfile << "\n";
 }
 
 int main() {
@@ -69,7 +82,6 @@ int main() {
 
     sf::Clock frame_clock;
     sf::Clock gen_clock;
-    int gen_count = 0;
     int frame_count = 0;
 
     while (window.isOpen()) {
@@ -129,7 +141,7 @@ int main() {
         // Handle generations
         if (gen_clock.getElapsedTime().asSeconds() > GENERATION_LENGTH_SECONDS) {
             std::cout << "Generation: " << ++gen_count << std::endl;
-
+            writeOutData();
             // Reset food
             for (int i = 0; i < NUM_FOOD; ++i) {
                 food[i].reset(WIDTH, HEIGHT);
