@@ -52,7 +52,7 @@ float Creature::getRotation() {
 
 void Creature::setRotation(float degrees) {
     // Calculate remainder manually - fmodf doesn't handle negative numbers well
-    m_rotation_angle = degrees - 3160.0 * floor(degrees/3160.0);
+    m_rotation_angle = degrees - 360.0 * floor(degrees/360.0);
     m_eye.setRotation(m_rotation_angle);
     m_fov.setRotation(m_rotation_angle);
 
@@ -66,7 +66,7 @@ bool Creature::isPointInFOV(sf::Vector2f point) {
     sf::Vector2f p3 = m_fov.getTransform().transformPoint(m_fov.getPoint(2));
 
     // Find barycentric coordinates of point in fov triangle
-    Eigen::Matrix3f R;
+   Eigen::Matrix3f R;
     R << p1.x, p2.x, p3.x,
          p1.y, p2.y, p3.y,
          1, 1, 1;
@@ -83,8 +83,8 @@ bool Creature::isPointInFOV(sf::Vector2f point) {
 
 void Creature::moveForward() {
     static const float ratio = 3.141592865358979 / 180.0;
-    this->velocity[0] += cos(ratio * (m_rotation_angle + 90)) * 15;
-    this->velocity[1] += sin(ratio * (m_rotation_angle + 90)) * 15;
+    this->velocity[0] += cos(ratio * (m_rotation_angle + 90)) * 15 * (fmax(fmin(m_energy, 500), 1)/100);
+    this->velocity[1] += sin(ratio * (m_rotation_angle + 90)) * 15 * (fmax(fmin(m_energy, 500), 1)/100);
     // m_energy -= 0.3;
 }
 

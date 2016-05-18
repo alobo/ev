@@ -11,8 +11,8 @@
 const int WIDTH = 1600;
 const int HEIGHT = 1200;
 const int NUM_CREATURES = 25;
-const int NUM_FOOD = 50;
-const int GENERATION_LENGTH_SECONDS = 10;
+const int NUM_FOOD = 100;
+const int GENERATION_LENGTH_SECONDS = 15;
 
 int gen_count = 0;
 Environment env = Environment(WIDTH, HEIGHT, 0.5);
