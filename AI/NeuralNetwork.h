@@ -8,6 +8,8 @@ class NeuralNetwork
 friend class Mutator;
 private:
     Eigen::MatrixXd w1;
+    Eigen::MatrixXd wh; // Hidden layer
+    Eigen::MatrixXd wh2; // Hidden layer
     Eigen::MatrixXd w2;
 
 public:
